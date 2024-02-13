@@ -1,7 +1,8 @@
 #include <iostream>
 #include <cstdlib>
 using namespace std;
- 
+#include <bits/stdc++.h> 
+
 void wygeneruj(int ROZMIAR, int wyl_liczby[]){
     srand((unsigned) time(NULL));
     for(int i = 0; i <= ROZMIAR; i++){
@@ -136,19 +137,96 @@ void sort_scal(int tab[], int p, int q, int ROZMIAR) {
  
 void sort_scalanie(int tab[], int left, int right) {
     if (left < right) {
-        int m = left + (right - left) / 2;
-        
+        int m = left + (right - left) / 2
         sort_scalanie(tab, left, m);
         sort_scalanie(tab, m + 1, right);   
-        
         sort_scal(tab, left, m, right);
     };
 };
+
+int wysz_linio(int tab2[], int n, int liczba) 
+{ 
+    for (int i = 0; i < liczba; i++) 
+        if (tab2[i] == liczba) 
+            return i; 
+    return -1; 
+} 
+
+void wysz_linio_zwart(int arr[], int n, int key)
+{
+    int last = arr[n - 1];
+    arr[n - 1] = key;
+    int i = 0;
+    while(arr[i] != key){
+        i++;
+    }
+    arr[n - 1] = last;
+    if((i < n - 1) || (arr[n - 1] == key)){
+        cout<<"Twoja cyfra jest w miejscu "<<i;
+    }else{
+        cout<<"nie ma takiej liczby";
+    }
+}
+
+int wysz_skok(int arr[], int n, int liczba){
+    int krok = sqrt(n);
+    int prev = 0;
+    while (arr[min(krok, n)-1] < liczba){
+        prev = krok;
+        krok += sqrt(n);
+        if (prev >= n){
+            return -1;
+        }
+    }
+    while (arr[prev] < liczba){
+        prev++;
+        if (prev == min(krok, n)){
+            return -1;
+        }
+    }
+    if (arr[prev] == liczba){
+        return prev;
+    }
+    return -1;
+}
+
+int wysz_binar(int arr[], int low, int high, int liczba){
+    while (low <= high){
+        int mid = low + (high - low) / 2;
+        if (arr[mid] == liczba){
+            return mid;
+        }
+        if (arr[mid] < liczba){
+            low = mid + 1;
+        }else{
+            high = mid - 1;
+        }
+    }
+    return -1;
+}
+
+int wysz_interpol(int arr[], int poczatek, int koniec, int liczba){
+    int pos;
+    if (poczatek <= koniec && liczba >= arr[poczatek] && liczba <= arr[koniec]){
+        pos = poczatek + (((double)(koniec - poczatek) / (arr[koniec] - arr[poczatek])) * (liczba - arr[poczatek]));
+        if (arr[pos] == liczba){
+            return pos;
+        }
+        if (arr[pos] < liczba){
+            return wysz_interpol(arr, pos + 1, koniec, liczba);
+        }
+        if (arr[pos] > liczba){
+            return wysz_interpol(arr, poczatek, pos - 1, liczba);
+        }
+    }
+    return -1;
+}
 
 int main()
 {
     constexpr int ROZMIAR = 12;
     int tab[ROZMIAR];
+    int tab2[ROZMIAR] = {5,10,26,34,40,46,50,61,69,76,88,91};
     cout<<"wylosowane liczby:"<<endl;
     wygeneruj(ROZMIAR,tab);
     wyswietl(ROZMIAR,tab);
@@ -167,4 +245,17 @@ int main()
     cout<<endl<<"sortowanie przez scalanie"<<endl;
     sort_scalanie(tab,0,ROZMIAR);
     wyswietl(ROZMIAR,tab);
+    int liczba;
+    cout<<endl<<endl<<"Jaką cyfrę chcesz wyszukać?: ";
+    cin>>liczba;
+    cout<<endl<<"wyszukiwanie liniowe"<<endl;
+    cout<<"twoja cyfra jest w miejscu "<<wysz_linio(tab2,ROZMIAR,liczba)<<endl;
+    cout<<endl<<"wyszukiwanie liniowe z wartownikiem"<<endl;
+    wysz_linio_zwart(tab2,ROZMIAR,liczba);
+    cout<<endl<<endl<<"wyszukiwanie skokowe"<<endl;
+    cout<<"twoja cyfra jest w miejscu "<<wysz_skok(tab2,ROZMIAR,liczba)<<endl;
+    cout<<endl<<"wyszukiwanie binarne"<<endl;
+    cout<<"twoja cyfra jest w miejscu "<<wysz_binar(tab2,0,ROZMIAR,liczba)<<endl;
+    cout<<endl<<"wyszukiwanie interpolacyjne"<<endl;
+    cout<<"twoja cyfra jest w miejscu "<<wysz_interpol(tab2,0,ROZMIAR,liczba)<<endl;
 }
