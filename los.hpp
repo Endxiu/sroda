@@ -137,7 +137,7 @@ void sort_scal(int tab[], int p, int q, int ROZMIAR) {
  
 void sort_scalanie(int tab[], int left, int right) {
     if (left < right) {
-        int m = left + (right - left) / 2
+        int m = left + (right - left) / 2;
         sort_scalanie(tab, left, m);
         sort_scalanie(tab, m + 1, right);   
         sort_scal(tab, left, m, right);
